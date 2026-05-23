@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  role         String   @default("ADMIN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Product {
+  id               String         @id @default(cuid())
+  name             String
+  slug             String         @unique
+  brand            String
+  price            Decimal        @db.Decimal(10, 2)
+  capacity         String
+  usableCapacity   String?
+  batteryChemistry String?
+  warrantyYears    Int?
+  dimensions       String?
+  weight           String?
+  description      String
+  specs            Json?
+  imageUrl         String?
+  isFeatured       Boolean        @default(false)
+  isActive         Boolean        @default(true)
+  images           ProductImage[]
+  inquiries        Inquiry[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String?
+  sortOrder Int      @default(0)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  createdAt DateTime @default(now())
+}
+
+model Inquiry {
+  id        String        @id @default(cuid())
+  name      String
+  phone     String
+  email     String
+  message   String
+  status    InquiryStatus @default(NEW)
+  product   Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productId String?
+  createdAt DateTime      @default(now())
+}
