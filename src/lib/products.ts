@@ -4,20 +4,30 @@ import { fallbackProducts } from "@/lib/fallback-products";
 export async function getActiveProducts() {
   if (!process.env.DATABASE_URL) return fallbackProducts;
 
-  return prisma.product.findMany({
-    where: { isActive: true },
-    orderBy: [{ isFeatured: "desc" }, { name: "asc" }]
-  });
+  try {
+    return await prisma.product.findMany({
+      where: { isActive: true },
+      orderBy: [{ isFeatured: "desc" }, { name: "asc" }]
+    });
+  } catch (error) {
+    console.warn("Using fallback products because the database is unavailable.", error);
+    return fallbackProducts;
+  }
 }
 
 export async function getFeaturedProducts() {
   if (!process.env.DATABASE_URL) return fallbackProducts.filter((product) => product.isFeatured).slice(0, 3);
 
-  return prisma.product.findMany({
-    where: { isActive: true, isFeatured: true },
-    take: 3,
-    orderBy: { name: "asc" }
-  });
+  try {
+    return await prisma.product.findMany({
+      where: { isActive: true, isFeatured: true },
+      take: 3,
+      orderBy: { name: "asc" }
+    });
+  } catch (error) {
+    console.warn("Using fallback featured products because the database is unavailable.", error);
+    return fallbackProducts.filter((product) => product.isFeatured).slice(0, 3);
+  }
 }
 
 export async function getProductBySlug(slug: string) {
@@ -26,8 +36,14 @@ export async function getProductBySlug(slug: string) {
     return product ? { ...product, images: [] } : null;
   }
 
-  return prisma.product.findUnique({
-    where: { slug },
-    include: { images: { orderBy: { sortOrder: "asc" } } }
-  });
+  try {
+    return await prisma.product.findUnique({
+      where: { slug },
+      include: { images: { orderBy: { sortOrder: "asc" } } }
+    });
+  } catch (error) {
+    console.warn("Using fallback product detail because the database is unavailable.", error);
+    const product = fallbackProducts.find((item) => item.slug === slug);
+    return product ? { ...product, images: [] } : null;
+  }
 }

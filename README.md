@@ -56,7 +56,7 @@ Change both before production.
 
 ## Email
 
-Inquiry submissions are saved to PostgreSQL. If SMTP variables are configured, the site also emails the business owner.
+Quote request submissions are saved to PostgreSQL. If SMTP variables are configured, the site also emails the nominated quote recipient.
 
 You can use Hostinger email SMTP, SendGrid SMTP, Mailgun SMTP, or another production SMTP provider.
 
@@ -69,6 +69,9 @@ Required variables:
 - `SMTP_PASS`
 - `MAIL_FROM`
 - `MAIL_TO`
+- `QUOTE_EMAIL_TO`
+
+`QUOTE_EMAIL_TO` is the address that receives customer quote requests. If it is not set, the app falls back to `MAIL_TO`, then `ADMIN_EMAIL`.
 
 ## SEO
 

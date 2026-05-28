@@ -4,7 +4,15 @@ import { getActiveProducts } from "@/lib/products";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const products = process.env.DATABASE_URL ? await getActiveProducts() : [];
+  let products: Awaited<ReturnType<typeof getActiveProducts>> = [];
+
+  if (process.env.DATABASE_URL) {
+    try {
+      products = await getActiveProducts();
+    } catch (error) {
+      console.warn("Skipping product sitemap URLs because the database is unavailable.", error);
+    }
+  }
 
   return [
     { url: siteUrl, lastModified: new Date(), priority: 1 },
