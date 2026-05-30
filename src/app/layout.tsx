@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BatteryCharging, Mail, Menu, ShieldCheck } from "lucide-react";
+import { BatteryCharging, Mail, Menu } from "lucide-react";
 
 import "./globals.css";
 
@@ -54,10 +54,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </nav>
 
             <div className="hidden items-center gap-3 md:flex">
-              <Link href="/admin" className="button-secondary h-11 px-4 text-sm">
+              {/* <Link href="/admin" className="button-secondary h-11 px-4 text-sm">
                 <ShieldCheck size={17} aria-hidden />
                 Admin
-              </Link>
+              </Link> */}
               <Link href="/contact" className="button-primary h-11 px-4 text-sm">
                 <Mail size={17} aria-hidden />
                 Get a quote

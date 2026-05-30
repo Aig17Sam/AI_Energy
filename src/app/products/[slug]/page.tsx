@@ -49,6 +49,10 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
     { label: "Dimensions", value: product.dimensions || "Confirm on inquiry", Icon: Ruler },
     { label: "Weight", value: product.weight || "Confirm on inquiry", Icon: Scale }
   ];
+  const productOptions = products.map((item) => ({
+    id: item.id,
+    name: item.name
+  }));
 
   return (
     <>
@@ -136,7 +140,7 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
 
       <section className="section-pad bg-white">
         <div className="container-shell max-w-3xl">
-          <InquiryForm products={products} selectedProductId={product.id} />
+          <InquiryForm products={productOptions} selectedProductId={product.id} />
         </div>
       </section>
     </>

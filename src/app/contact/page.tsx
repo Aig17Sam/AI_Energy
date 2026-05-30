@@ -17,6 +17,10 @@ export default async function ContactPage({
   searchParams: Promise<{ product?: string }>;
 }) {
   const [products, params] = await Promise.all([getActiveProducts(), searchParams]);
+  const productOptions = products.map((product) => ({
+    id: product.id,
+    name: product.name
+  }));
 
   return (
     <section className="section-pad bg-mist-blue">
@@ -29,7 +33,7 @@ export default async function ContactPage({
             dashboard and emailed to the business owner when SMTP is configured.
           </p>
         </div>
-        <InquiryForm products={products} selectedProductId={params.product} />
+        <InquiryForm products={productOptions} selectedProductId={params.product} />
       </div>
     </section>
   );

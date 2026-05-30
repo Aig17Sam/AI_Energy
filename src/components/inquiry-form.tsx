@@ -2,9 +2,13 @@
 
 import { useActionState } from "react";
 import { Send } from "lucide-react";
-import type { Product } from "@prisma/client";
 
 import { createInquiry } from "@/app/actions/inquiries";
+
+type InquiryProductOption = {
+  id: string;
+  name: string;
+};
 
 type State = {
   ok?: boolean;
@@ -17,7 +21,7 @@ export function InquiryForm({
   products,
   selectedProductId
 }: {
-  products: Pick<Product, "id" | "name">[];
+  products: InquiryProductOption[];
   selectedProductId?: string;
 }) {
   const [state, action, pending] = useActionState(createInquiry, initialState);
@@ -48,7 +52,7 @@ export function InquiryForm({
           <label className="label" htmlFor="phone">
             Phone
           </label>
-          <input className="field" id="phone" name="phone" autoComplete="tel" required />
+          <input className="field" id="phone" name="phone" autoComplete="tel" minLength={6} required />
         </div>
       </div>
 
@@ -81,6 +85,7 @@ export function InquiryForm({
           className="field min-h-36 resize-y"
           id="message"
           name="message"
+          minLength={10}
           required
           placeholder="Tell us about your property, existing solar system, energy goals, or preferred battery."
         />
