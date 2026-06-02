@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Edit, Plus, Trash2 } from "lucide-react";
+import { Edit, Plus } from "lucide-react";
 
-import { deleteProduct } from "@/app/admin/actions";
+import { AdminDeleteProductButton } from "@/components/admin-delete-product-button";
 import { formatCurrency } from "@/lib/format";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -59,12 +59,7 @@ export default async function AdminProductsPage() {
                   <Link href={`/admin/products/${product.id}`} className="button-secondary h-10 px-3 text-sm" aria-label={`Edit ${product.name}`}>
                     <Edit size={16} aria-hidden />
                   </Link>
-                  <form action={deleteProduct}>
-                    <input type="hidden" name="id" value={product.id} />
-                    <button className="button-secondary h-10 px-3 text-sm text-red-700" type="submit" aria-label={`Delete ${product.name}`}>
-                      <Trash2 size={16} aria-hidden />
-                    </button>
-                  </form>
+                  <AdminDeleteProductButton id={product.id} name={product.name} />
                 </div>
               </div>
             ))}
