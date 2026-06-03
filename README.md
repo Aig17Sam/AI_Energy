@@ -11,6 +11,7 @@ Professional Next.js website for an Australian solar battery business. It includ
 - Prisma ORM
 - Custom signed-cookie admin auth
 - Nodemailer SMTP inquiry notifications
+- Vercel Blob product image uploads
 
 ## Local Setup
 
