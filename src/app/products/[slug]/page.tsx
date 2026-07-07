@@ -2,15 +2,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Battery, Ruler, Scale, ShieldCheck, Zap } from "lucide-react";
+import { Battery, Ruler, Scale, ShieldCheck, Zap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { ComparisonTableCarousel } from "@/components/comparison-table-carousel";
+import { CompareProductPicker } from "@/components/compare-product-picker";
 import { InquiryForm } from "@/components/inquiry-form";
 import { formatCurrency } from "@/lib/format";
 import { getActiveProducts, getProductBySlug } from "@/lib/products";
 
 type ProductDetailProps = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ compare?: string | string[] }>;
 };
 
 export const dynamic = "force-dynamic";
@@ -31,11 +34,18 @@ export async function generateMetadata({ params }: ProductDetailProps): Promise<
   };
 }
 
-export default async function ProductDetailPage({ params }: ProductDetailProps) {
-  const { slug } = await params;
+export default async function ProductDetailPage({ params, searchParams }: ProductDetailProps) {
+  const [{ slug }, query] = await Promise.all([params, searchParams]);
   const [product, products] = await Promise.all([getProductBySlug(slug), getActiveProducts()]);
 
   if (!product || !product.isActive) notFound();
+
+  const compareSlugs = (Array.isArray(query.compare) ? query.compare : query.compare ? [query.compare] : []).filter(
+    (value, index, values) => value !== slug && values.indexOf(value) === index
+  );
+  const compareProducts = compareSlugs
+    .map((compareSlug) => products.find((item) => item.slug === compareSlug && item.isActive))
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   const specs =
     product.specs && typeof product.specs === "object" && !Array.isArray(product.specs)
@@ -43,7 +53,7 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
       : [];
   const specCards: { label: string; value: string; Icon: LucideIcon }[] = [
     { label: "Capacity", value: product.capacity, Icon: Battery },
-    { label: "Usable capacity", value: product.usableCapacity || "Confirm on inquiry", Icon: Battery },
+    { label: "Model", value: product.usableCapacity || "Confirm on inquiry", Icon: Battery },
     { label: "Chemistry", value: product.batteryChemistry || "Confirm on inquiry", Icon: Zap },
     { label: "Warranty", value: product.warrantyYears ? `${product.warrantyYears} years` : "Confirm on inquiry", Icon: ShieldCheck },
     { label: "Dimensions", value: product.dimensions || "Confirm on inquiry", Icon: Ruler },
@@ -52,6 +62,35 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
   const productOptions = products.map((item) => ({
     id: item.id,
     name: item.name
+  }));
+  const compareOptions = products
+    .filter((item) => item.slug !== slug)
+    .map((item) => ({
+      slug: item.slug,
+      name: item.name,
+      brand: item.brand,
+      isSelected: compareProducts.some((compareProduct) => compareProduct.slug === item.slug)
+    }));
+  const buildComparisonRows = (item: typeof product) => [
+    { label: "Price", value: formatCurrency(item.price.toString()) },
+    { label: "Capacity", value: item.capacity },
+    { label: "Model", value: item.usableCapacity || "Confirm on inquiry" },
+    { label: "Chemistry", value: item.batteryChemistry || "Confirm on inquiry" },
+    { label: "Warranty", value: item.warrantyYears ? `${item.warrantyYears} years` : "Confirm on inquiry" },
+    { label: "Dimensions", value: item.dimensions || "Confirm on inquiry" },
+    { label: "Weight", value: item.weight || "Confirm on inquiry" }
+  ];
+  const currentComparisonProduct = {
+    slug: product.slug,
+    name: product.name,
+    brand: product.brand,
+    rows: buildComparisonRows(product)
+  };
+  const comparisonProducts = compareProducts.map((item) => ({
+    slug: item.slug,
+    name: item.name,
+    brand: item.brand,
+    rows: buildComparisonRows(item)
   }));
 
   return (
@@ -92,14 +131,19 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
                 <Zap size={18} aria-hidden />
                 Make inquiry
               </Link>
-              <Link href="/products" className="button-secondary">
-                Compare products
-                <ArrowRight size={18} aria-hidden />
-              </Link>
+              <CompareProductPicker currentSlug={slug} options={compareOptions} />
             </div>
           </div>
         </div>
       </section>
+
+      {comparisonProducts.length ? (
+        <ComparisonTableCarousel
+          currentProduct={currentComparisonProduct}
+          compareProducts={comparisonProducts}
+          clearHref={`/products/${slug}`}
+        />
+      ) : null}
 
       <section className="section-pad bg-mist-blue">
         <div className="container-shell grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">

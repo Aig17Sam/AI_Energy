@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { BatteryCharging, Mail, Menu } from "lucide-react";
+import { Mail, MapPin, Menu, Phone } from "lucide-react";
 
 import "./globals.css";
+import { getSiteLogo } from "@/lib/site-branding";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
@@ -24,21 +26,77 @@ export const metadata: Metadata = {
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Products" },
+  { href: "/#stc-calculator", label: "Calculator" },
   { href: "/contact", label: "Inquiry" }
 ];
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+function SolarLogo({ className = "h-11 w-11" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 96 96" fill="none" role="img" aria-label="AI Energy solar logo">
+      <rect width="96" height="96" rx="20" fill="#10202B" />
+      <circle cx="66" cy="31" r="14" fill="#FBBF24" />
+      <path d="M66 8V16" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
+      <path d="M66 46V54" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
+      <path d="M43 31H51" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
+      <path d="M81 31H89" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
+      <path d="M49.7 14.7L55.3 20.3" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
+      <path d="M76.7 41.7L82.3 47.3" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
+      <path d="M82.3 14.7L76.7 20.3" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
+      <path d="M55.3 41.7L49.7 47.3" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
+      <path d="M18 56C18.8 51.1 23.1 47.5 28.1 47.5H66.6C71.2 47.5 75.3 50.6 76.6 55L84 80H12L18 56Z" fill="#10B981" />
+      <path d="M26 53H69" stroke="#D1FAE5" strokeWidth="3" strokeLinecap="round" />
+      <path d="M20 66H80" stroke="#D1FAE5" strokeWidth="3" strokeLinecap="round" />
+      <path d="M31 48L24 80" stroke="#D1FAE5" strokeWidth="3" strokeLinecap="round" />
+      <path d="M47 48L46 80" stroke="#D1FAE5" strokeWidth="3" strokeLinecap="round" />
+      <path d="M63 48L69 80" stroke="#D1FAE5" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+async function BrandMark({
+  currentLogo,
+  size = "large"
+}: {
+  currentLogo: Awaited<ReturnType<typeof getSiteLogo>>;
+  size?: "large" | "small";
+}) {
+  if (!currentLogo) {
+    return size === "large" ? <SolarLogo /> : <SolarLogo className="h-6 w-6 rounded-md" />;
+  }
+
+  return size === "large" ? (
+    <Image
+      src={currentLogo.imageUrl}
+      alt={currentLogo.alt}
+      width={180}
+      height={68}
+      className="h-11 w-auto max-w-[180px] object-contain md:h-12"
+    />
+  ) : (
+    <Image
+      src={currentLogo.imageUrl}
+      alt={currentLogo.alt}
+      width={150}
+      height={45}
+      className="h-8 w-auto max-w-[150px] object-contain"
+    />
+  );
+}
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const currentLogo = await getSiteLogo();
+
   return (
     <html lang="en-AU">
       <body>
         <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/92 backdrop-blur">
           <div className="container-shell flex h-20 items-center justify-between gap-6">
-            <Link href="/" className="flex items-center gap-3" aria-label="AI Energy home">
-              <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-ink text-energy-green">
-                <BatteryCharging size={24} aria-hidden />
+            <Link href="/" className="flex items-center gap-0.5" aria-label="AI Energy home">
+              <span className="flex min-h-11 min-w-[70px] items-center justify-center overflow-hidden rounded-lg md:min-w-[80px]">
+                <BrandMark currentLogo={currentLogo} size="large" />
               </span>
               <span>
-                <span className="block text-xl font-black tracking-normal text-ink">AI Energy</span>
+                <span className="block text-xl font-black tracking-normal text-ink">AI ENERGY</span>
                 <span className="block text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                   Solar Battery Australia
                 </span>
@@ -54,10 +112,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </nav>
 
             <div className="hidden items-center gap-3 md:flex">
-              {/* <Link href="/admin" className="button-secondary h-11 px-4 text-sm">
-                <ShieldCheck size={17} aria-hidden />
-                Admin
-              </Link> */}
               <Link href="/contact" className="button-primary h-11 px-4 text-sm">
                 <Mail size={17} aria-hidden />
                 Get a quote
@@ -86,31 +140,50 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
         <main>{children}</main>
 
-        <footer className="border-t border-slate-200 bg-ink py-10 text-white">
-          <div className="container-shell grid gap-6 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
-            <div>
-              <div className="mb-3 flex items-center gap-2 text-lg font-black">
-                <BatteryCharging className="text-energy-green" size={22} aria-hidden />
-                AI Energy
+        <footer className="border-t border-slate-200/80 bg-white/92 py-6 backdrop-blur">
+          <div className="container-shell">
+            <div className="grid gap-3.5 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
+              <div>
+                <div className="mb-1.5 flex items-center gap-2 text-xl font-black leading-none text-ink">
+                  <BrandMark currentLogo={currentLogo} size="small" />
+                  <span className="-translate-y-[2px]">AI ENERGY</span>
+                </div>
+                <div className="mt-2.5 grid gap-1 text-sm leading-5 text-slate-600">
+                  <p className="flex items-start gap-2">
+                    <MapPin size={16} className="mt-0.5 shrink-0 text-energy-green" aria-hidden />
+                    <span>1/17 Brumby St, Seven Hills NSW 2147</span>
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <Phone size={16} className="shrink-0 text-energy-green" aria-hidden />
+                    <span>(02) 8360 3660</span>
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <Mail size={16} className="shrink-0 text-energy-green" aria-hidden />
+                    <span>info@aienergygroup.com.au</span>
+                  </p>
+                </div>
               </div>
-              <p className="max-w-md text-sm leading-6 text-slate-300">
-                Solar battery product guidance, pricing transparency, and inquiry support for Australian homes and
-                small businesses.
-              </p>
-            </div>
-            <div>
-              <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.16em] text-slate-400">Explore</h2>
-              <div className="grid gap-2 text-sm text-slate-300">
-                <Link href="/products">Products</Link>
-                <Link href="/contact">Make an inquiry</Link>
-                <Link href="/admin">Admin login</Link>
+              <div>
+                <h2 className="mb-1.5 text-sm font-bold uppercase tracking-[0.16em] text-slate-500">Explore</h2>
+                <div className="grid gap-1.25 text-sm text-slate-600">
+                  <Link href="/products" className="hover:text-ink">
+                    Products
+                  </Link>
+                  <Link href="/contact" className="hover:text-ink">
+                    Make an inquiry
+                  </Link>
+                </div>
+              </div>
+              <div>
+                <h2 className="mb-1.5 text-sm font-bold uppercase tracking-[0.16em] text-slate-500">Coverage</h2>
+                <p className="text-sm leading-5 text-slate-600">
+                  Solar battery product guidance, pricing transparency, and inquiry support for Australian homes and
+                  small businesses.
+                </p>
               </div>
             </div>
-            <div>
-              <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.16em] text-slate-400">Coverage</h2>
-              <p className="text-sm leading-6 text-slate-300">
-                Built for Australian solar battery searches, comparison pages, and product-led SEO growth.
-              </p>
+            <div className="mt-5 border-t border-slate-200 pt-3 text-sm text-slate-500">
+              © 2026 AI ENERGY Group Pty Ltd. All rights reserved.
             </div>
           </div>
         </footer>

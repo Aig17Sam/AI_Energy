@@ -1,0 +1,1 @@
+ALTER TABLE "HeroSlide" ADD COLUMN "href" TEXT;

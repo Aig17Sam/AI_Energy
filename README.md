@@ -74,14 +74,6 @@ Required variables:
 
 `QUOTE_EMAIL_TO` is the address that receives customer quote requests. If it is not set, the app falls back to `MAIL_TO`, then `ADMIN_EMAIL`.
 
-## Product Image Uploads
-
-Admin product image uploads use Vercel Blob. Create a public Blob store in Vercel and add the generated token as:
-
-- `BLOB_READ_WRITE_TOKEN`
-
-The admin product form also keeps an image URL fallback for local development or externally hosted images.
-
 ## SEO
 
 Included:
