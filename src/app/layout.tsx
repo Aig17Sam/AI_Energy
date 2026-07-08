@@ -26,8 +26,7 @@ export const metadata: Metadata = {
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Products" },
-  { href: "/#stc-calculator", label: "Calculator" },
-  { href: "/contact", label: "Inquiry" }
+  { href: "/#stc-calculator", label: "Calculator" }
 ];
 
 function SolarLogo({ className = "h-11 w-11" }: { className?: string }) {

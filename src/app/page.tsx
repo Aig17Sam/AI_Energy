@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Home, SunMedium } from "lucide-react";
+import { ArrowRight, BadgePercent, Home, Newspaper, SunMedium, Zap } from "lucide-react";
 
 import { HeroImageCarousel } from "@/components/hero-image-carousel";
 import { ProductCard } from "@/components/product-card";
@@ -8,6 +8,36 @@ import { getHeroSlides } from "@/lib/hero-slides";
 import { getFeaturedProducts } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
+
+const highlights = [
+  {
+    label: "Limited offer",
+    title: "Seasonal battery package discounts",
+    description:
+      "Ask about current pricing on selected home battery systems and installation-ready storage packages.",
+    href: "/contact",
+    cta: "Request pricing",
+    Icon: BadgePercent
+  },
+  {
+    label: "Energy update",
+    title: "Battery rebates and STC guidance",
+    description:
+      "Get practical advice on incentives, eligibility, and how storage can improve your solar payback.",
+    href: "/#stc-calculator",
+    cta: "Use calculator",
+    Icon: Newspaper
+  },
+  {
+    label: "Popular choice",
+    title: "Backup power for Australian homes",
+    description:
+      "Compare reliable battery options designed for evening energy use, outage support, and solar self-consumption.",
+    href: "/products",
+    cta: "Compare products",
+    Icon: Zap
+  }
+];
 
 export default async function HomePage() {
   const [products, heroSlides] = await Promise.all([getFeaturedProducts(), getHeroSlides()]);
@@ -22,7 +52,7 @@ export default async function HomePage() {
               Australian solar battery storage specialists
             </div>
             <h1 className="text-5xl font-black leading-[1.03] tracking-normal text-ink md:text-7xl">
-              AI Energy DEV
+              AI Energy
             </h1>
             <p className="mt-6 max-w-2xl text-xl leading-8 text-slate-600">
               Professional solar battery guidance for homes and small businesses wanting smarter storage, clearer
@@ -51,6 +81,45 @@ export default async function HomePage() {
             </dl>
           </div>
           <HeroImageCarousel slides={heroSlides} />
+        </div>
+      </section>
+
+      <section className="border-y border-slate-200 bg-white py-12">
+        <div className="container-shell">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="font-bold uppercase tracking-[0.16em] text-energy-green">Latest offers</p>
+              <h2 className="mt-2 text-3xl font-black text-ink">News, discounts, and energy updates</h2>
+            </div>
+            <Link href="/contact" className="button-secondary">
+              Ask what is available
+              <ArrowRight size={17} aria-hidden />
+            </Link>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-3">
+            {highlights.map(({ label, title, description, href, cta, Icon }) => (
+              <Link
+                key={title}
+                href={href}
+                className="group rounded-lg border border-slate-200 bg-slate-50 p-5 transition hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-white hover:shadow-sm"
+              >
+                <div className="mb-5 flex items-center justify-between gap-4">
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-slate-600 ring-1 ring-slate-200">
+                    {label}
+                  </span>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-800">
+                    <Icon size={20} aria-hidden />
+                  </span>
+                </div>
+                <h3 className="text-xl font-black text-ink">{title}</h3>
+                <p className="mt-3 min-h-20 leading-7 text-slate-600">{description}</p>
+                <div className="mt-5 inline-flex items-center gap-2 text-sm font-black text-energy-green">
+                  {cta}
+                  <ArrowRight size={16} className="transition group-hover:translate-x-1" aria-hidden />
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
