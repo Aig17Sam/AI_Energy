@@ -16,6 +16,16 @@ type ProductDetailProps = {
   searchParams: Promise<{ compare?: string | string[] }>;
 };
 
+type ComparisonRowProduct = {
+  price: { toString(): string };
+  capacity: string;
+  usableCapacity: string | null;
+  batteryChemistry: string | null;
+  warrantyYears: number | null;
+  dimensions: string | null;
+  weight: string | null;
+};
+
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: ProductDetailProps): Promise<Metadata> {
@@ -71,7 +81,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
       brand: item.brand,
       isSelected: compareProducts.some((compareProduct) => compareProduct.slug === item.slug)
     }));
-  const buildComparisonRows = (item: typeof product) => [
+  const buildComparisonRows = (item: ComparisonRowProduct) => [
     { label: "Price", value: formatCurrency(item.price.toString()) },
     { label: "Capacity", value: item.capacity },
     { label: "Model", value: item.usableCapacity || "Confirm on inquiry" },
