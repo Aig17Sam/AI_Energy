@@ -49,7 +49,7 @@ export default async function AdminInquiriesPage() {
                 <div className="text-sm font-bold uppercase tracking-[0.12em] text-slate-500">
                   {inquiry.product?.name || "General inquiry"} · {inquiry.createdAt.toLocaleString("en-AU")}
                 </div>
-                <p className="leading-7 text-slate-700">{inquiry.message}</p>
+                <p className="whitespace-pre-wrap leading-7 text-slate-700">{inquiry.message}</p>
               </div>
             </article>
           ))}

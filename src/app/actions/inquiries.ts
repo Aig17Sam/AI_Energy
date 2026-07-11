@@ -10,6 +10,13 @@ const inquirySchema = z.object({
   name: z.string().trim().min(2, "Please enter your name."),
   phone: z.string().trim().min(6, "Please enter a phone number with at least 6 characters."),
   email: z.string().trim().email("Please enter a valid email address."),
+  state: z.enum(["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"], {
+    errorMap: () => ({ message: "Please select your state." })
+  }),
+  postcode: z.string().trim().regex(/^\d{4}$/, "Please enter a valid 4-digit postcode."),
+  hasSolar: z.enum(["Yes", "No", "Planning to install solar", "Not sure"], {
+    errorMap: () => ({ message: "Please tell us whether you have solar." })
+  }),
   message: z.string().trim().min(10, "Please enter a message with at least 10 characters."),
   productId: z.string().optional()
 });
@@ -26,6 +33,9 @@ export async function createInquiry(_: unknown, formData: FormData) {
     name: formData.get("name"),
     phone: formData.get("phone"),
     email: formData.get("email"),
+    state: formData.get("state"),
+    postcode: formData.get("postcode"),
+    hasSolar: formData.get("hasSolar"),
     message: formData.get("message"),
     productId: formData.get("productId") || undefined
   });
@@ -37,13 +47,19 @@ export async function createInquiry(_: unknown, formData: FormData) {
   const product = parsed.data.productId
     ? await prisma.product.findUnique({ where: { id: parsed.data.productId } })
     : null;
+  const enrichedMessage = buildInquiryMessage({
+    hasSolar: parsed.data.hasSolar,
+    message: parsed.data.message,
+    postcode: parsed.data.postcode,
+    state: parsed.data.state
+  });
 
   const inquiry = await prisma.inquiry.create({
     data: {
       name: parsed.data.name,
       phone: parsed.data.phone,
       email: parsed.data.email,
-      message: parsed.data.message,
+      message: enrichedMessage,
       productId: product?.id
     }
   });
@@ -54,7 +70,7 @@ export async function createInquiry(_: unknown, formData: FormData) {
       name: parsed.data.name,
       phone: parsed.data.phone,
       email: parsed.data.email,
-      message: parsed.data.message,
+      message: enrichedMessage,
       productName: product?.name,
       productPrice: product ? formatCurrency(product.price.toString()) : null,
       createdAt: inquiry.createdAt
@@ -81,7 +97,32 @@ function getInquiryErrorMessage(error: z.ZodError<z.infer<typeof inquirySchema>>
     fieldErrors.name?.[0] ||
     fieldErrors.phone?.[0] ||
     fieldErrors.email?.[0] ||
+    fieldErrors.state?.[0] ||
+    fieldErrors.postcode?.[0] ||
+    fieldErrors.hasSolar?.[0] ||
     fieldErrors.message?.[0] ||
     "Please check the form and complete all required fields."
   );
+}
+
+function buildInquiryMessage({
+  hasSolar,
+  message,
+  postcode,
+  state
+}: {
+  hasSolar: string;
+  message: string;
+  postcode: string;
+  state: string;
+}) {
+  return [
+    "Quote details",
+    `State: ${state}`,
+    `Postcode: ${postcode}`,
+    `Has solar: ${hasSolar}`,
+    "",
+    "Customer message",
+    message
+  ].join("\n");
 }

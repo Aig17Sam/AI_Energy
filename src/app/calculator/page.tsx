@@ -7,13 +7,13 @@ import { StcCalculator } from "@/components/stc-calculator";
 export const metadata: Metadata = {
   title: "STC Calculator",
   description:
-    "Estimate Australian Small-scale Technology Certificates for a solar PV system using system size, STC zone, deeming years, and certificate price."
+    "Estimate Australian Small-scale Technology Certificates for solar PV, eligible batteries, or a combined solar and battery package."
 };
 
 const notes = [
   "STC prices move with market conditions, so keep the certificate price editable.",
   "The calculator is an estimate and should be checked against final site design and eligibility.",
-  "Battery-only products generally do not create STCs; STCs apply to eligible solar PV system capacity."
+  "Eligible batteries can now receive support through the Cheaper Home Batteries Program when connected to new or existing solar PV."
 ];
 
 export default function CalculatorPage() {
@@ -29,7 +29,7 @@ export default function CalculatorPage() {
             <h1 className="text-4xl font-black leading-tight text-ink md:text-5xl">STC calculator</h1>
             <p className="mt-5 text-lg leading-8 text-slate-600">
               Estimate the Small-scale Technology Certificate value that may reduce the upfront cost of an eligible
-              solar PV system.
+              solar PV system, battery installation, or full solar and battery package.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link href="/contact" className="button-primary">
