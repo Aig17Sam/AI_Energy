@@ -26,6 +26,14 @@ export type BrandingActionState = {
   message: string;
 };
 
+const imageUrlSchema = z
+  .string()
+  .trim()
+  .url("Image URL must be a valid URL.")
+  .refine(isLikelyImageUrl, "Image URL must point directly to an image file.")
+  .optional()
+  .or(z.literal(""));
+
 const productSchema = z.object({
   name: z.string().trim().min(2, "Product name must contain at least 2 characters."),
   slug: z.string().optional(),
@@ -38,7 +46,7 @@ const productSchema = z.object({
   dimensions: z.string().optional(),
   weight: z.string().optional(),
   description: z.string().trim().min(20, "Description must contain at least 20 characters."),
-  imageUrl: z.string().trim().url("Image URL must be a valid URL.").optional().or(z.literal("")),
+  imageUrl: imageUrlSchema,
   isFeatured: z.boolean().default(false),
   isActive: z.boolean().default(false)
 });
@@ -48,14 +56,14 @@ const heroSlideSchema = z.object({
   text: z.string().trim().optional(),
   alt: z.string().trim().optional(),
   href: z.string().trim().optional(),
-  imageUrl: z.string().trim().url("Image URL must be a valid URL.").optional().or(z.literal("")),
+  imageUrl: imageUrlSchema,
   sortOrder: z.coerce.number().int().default(0),
   isActive: z.boolean().default(false)
 });
 
 const brandingSchema = z.object({
   alt: z.string().trim().optional(),
-  imageUrl: z.string().trim().url("Image URL must be a valid URL.").optional().or(z.literal(""))
+  imageUrl: imageUrlSchema
 });
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
@@ -80,6 +88,7 @@ export async function logoutAdmin() {
 }
 
 async function productDataFromForm(formData: FormData) {
+  const hasImageUpload = hasUploadFile(formData.get("imageFile"));
   const parsed = productSchema.safeParse({
     name: formData.get("name"),
     slug: formData.get("slug") || undefined,
@@ -92,7 +101,7 @@ async function productDataFromForm(formData: FormData) {
     dimensions: formData.get("dimensions") || undefined,
     weight: formData.get("weight") || undefined,
     description: formData.get("description"),
-    imageUrl: formData.get("imageUrl") || "",
+    imageUrl: hasImageUpload ? "" : formData.get("imageUrl") || "",
     isFeatured: formData.get("isFeatured") === "on",
     isActive: formData.get("isActive") === "on"
   });
@@ -150,12 +159,13 @@ export async function updateProduct(
 export async function createHeroSlide(_: HeroSlideActionState, formData: FormData): Promise<HeroSlideActionState> {
   await requireAdmin();
 
+  const hasImageUpload = hasUploadFile(formData.get("imageFile"));
   const parsed = heroSlideSchema.safeParse({
     title: formData.get("title") || undefined,
     text: formData.get("text") || undefined,
     alt: formData.get("alt") || undefined,
     href: formData.get("href") || undefined,
-    imageUrl: formData.get("imageUrl") || "",
+    imageUrl: hasImageUpload ? "" : formData.get("imageUrl") || "",
     sortOrder: formData.get("sortOrder") || 0,
     isActive: formData.get("isActive") === "on"
   });
@@ -215,12 +225,13 @@ export async function updateHeroSlide(
     };
   }
 
+  const hasImageUpload = hasUploadFile(formData.get("imageFile"));
   const parsed = heroSlideSchema.safeParse({
     title: formData.get("title") || undefined,
     text: formData.get("text") || undefined,
     alt: formData.get("alt") || undefined,
     href: formData.get("href") || undefined,
-    imageUrl: formData.get("imageUrl") || "",
+    imageUrl: hasImageUpload ? "" : formData.get("imageUrl") || "",
     sortOrder: formData.get("sortOrder") || 0,
     isActive: formData.get("isActive") === "on"
   });
@@ -268,9 +279,10 @@ export async function updateHeroSlide(
 export async function updateSiteLogo(_: BrandingActionState, formData: FormData): Promise<BrandingActionState> {
   await requireAdmin();
 
+  const hasImageUpload = hasUploadFile(formData.get("imageFile"));
   const parsed = brandingSchema.safeParse({
     alt: formData.get("alt") || undefined,
-    imageUrl: formData.get("imageUrl") || ""
+    imageUrl: hasImageUpload ? "" : formData.get("imageUrl") || ""
   });
 
   if (!parsed.success) {
@@ -369,6 +381,27 @@ async function uploadPublicImage(fileValue: FormDataEntryValue | null, pathPrefi
   }
 
   return { ok: true, url: blob.url } as const;
+}
+
+function hasUploadFile(fileValue: FormDataEntryValue | null) {
+  return fileValue instanceof File && fileValue.size > 0;
+}
+
+function isLikelyImageUrl(value: string | undefined) {
+  if (!value) return true;
+
+  try {
+    const url = new URL(value);
+    const pathname = url.pathname.toLowerCase();
+
+    return (
+      /\.(avif|gif|jpe?g|png|webp)$/.test(pathname) ||
+      url.hostname === "images.unsplash.com" ||
+      url.hostname.endsWith(".public.blob.vercel-storage.com")
+    );
+  } catch {
+    return false;
+  }
 }
 
 export async function deleteHeroSlide(formData: FormData) {

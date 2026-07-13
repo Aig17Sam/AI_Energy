@@ -5,6 +5,7 @@ import { Edit, ImageIcon, Trash2 } from "lucide-react";
 import { deleteHeroSlide } from "@/app/admin/actions";
 import { AdminHeroSlideForm } from "@/components/admin-hero-slide-form";
 import { requireAdmin } from "@/lib/auth";
+import { isSupportedHeroImageUrl } from "@/lib/hero-slides";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -26,25 +27,29 @@ export default async function AdminHeroSlidesPage() {
         <AdminHeroSlideForm />
 
         <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-          <div className="grid min-w-[940px] grid-cols-[140px_1.2fr_1.4fr_110px_130px] gap-4 border-b border-slate-200 bg-slate-50 p-4 text-sm font-bold uppercase tracking-[0.12em] text-slate-500">
+          <div className="grid min-w-[760px] grid-cols-[140px_1fr_110px_130px] gap-4 border-b border-slate-200 bg-slate-50 p-4 text-sm font-bold uppercase tracking-[0.12em] text-slate-500">
             <div>Image</div>
             <div>Title</div>
-            <div>Text</div>
             <div>Status</div>
             <div>Actions</div>
           </div>
           <div className="overflow-x-auto">
             {slides.length ? (
               slides.map((slide) => (
-                <div key={slide.id} className="grid min-w-[940px] grid-cols-[140px_1.2fr_1.4fr_110px_130px] items-center gap-4 border-b border-slate-100 p-4 last:border-b-0">
+                <div key={slide.id} className="grid min-w-[760px] grid-cols-[140px_1fr_110px_130px] items-center gap-4 border-b border-slate-100 p-4 last:border-b-0">
                   <div className="relative h-20 overflow-hidden rounded-md bg-mist-blue">
-                    <Image src={slide.imageUrl} alt={slide.alt || slide.title || "Homepage carousel image"} fill className="object-cover" sizes="140px" />
+                    {isSupportedHeroImageUrl(slide.imageUrl) ? (
+                      <Image src={slide.imageUrl} alt={slide.alt || slide.title || "Homepage carousel image"} fill className="object-cover" sizes="140px" />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-energy-green">
+                        <ImageIcon size={24} aria-hidden />
+                      </div>
+                    )}
                   </div>
                   <div>
                     <div className="font-black text-ink">{slide.title || "Untitled slide"}</div>
                     <div className="mt-1 text-sm text-slate-500">Order {slide.sortOrder}</div>
                   </div>
-                  <div className="text-sm leading-6 text-slate-600">{slide.text || "No short text"}</div>
                   <div>
                     <span className={`rounded-full px-3 py-1 text-xs font-bold ${slide.isActive ? "bg-emerald-50 text-emerald-800" : "bg-slate-100 text-slate-600"}`}>
                       {slide.isActive ? "Active" : "Hidden"}
@@ -64,7 +69,7 @@ export default async function AdminHeroSlidesPage() {
                 </div>
               ))
             ) : (
-              <div className="flex min-w-[940px] items-center gap-3 p-6 text-slate-600">
+              <div className="flex min-w-[760px] items-center gap-3 p-6 text-slate-600">
                 <ImageIcon className="text-energy-green" size={22} aria-hidden />
                 No uploaded carousel images yet. The homepage is using fallback images.
               </div>

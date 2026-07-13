@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Zap } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import type { HeroCarouselSlide } from "@/lib/hero-slides";
@@ -25,8 +25,6 @@ export function HeroImageCarousel({ slides }: { slides: HeroCarouselSlide[] }) {
   const activeSlide = slides[activeIndex] || slides[0];
 
   if (!activeSlide) return null;
-
-  const hasCaption = Boolean(activeSlide.title || activeSlide.text);
 
   function showPrevious() {
     setActiveIndex((index) => (index - 1 + slides.length) % slides.length);
@@ -56,7 +54,7 @@ export function HeroImageCarousel({ slides }: { slides: HeroCarouselSlide[] }) {
         <Link
           href={activeSlide.href}
           className="absolute inset-0 z-10 block"
-          aria-label={activeSlide.title || activeSlide.alt}
+          aria-label={activeSlide.alt}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -65,22 +63,6 @@ export function HeroImageCarousel({ slides }: { slides: HeroCarouselSlide[] }) {
       ) : (
         imageLayers
       )}
-
-      {hasCaption ? (
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-ink via-ink/70 to-transparent p-6 text-white">
-          <div className="grid gap-3 rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-energy-green text-ink">
-                <Zap size={20} aria-hidden />
-              </span>
-              <div>
-                {activeSlide.title ? <p className="font-black">{activeSlide.title}</p> : null}
-                {activeSlide.text ? <p className="text-sm text-slate-200">{activeSlide.text}</p> : null}
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
 
       {slides.length > 1 ? (
         <>

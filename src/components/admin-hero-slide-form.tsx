@@ -33,12 +33,7 @@ export function AdminHeroSlideForm({
         <Field label="Sort order" name="sortOrder" type="number" defaultValue={slide?.sortOrder.toString() || "0"} step="1" />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Field label="Short text" name="text" defaultValue={slide?.text || ""} placeholder="Products, specs, pricing, and inquiry flow in one place." />
-        <Field label="Alt text" name="alt" defaultValue={slide?.alt || ""} placeholder="Solar battery product image" />
-      </div>
-
-      <Field label="Link URL" name="href" defaultValue={slide?.href || ""} placeholder="https://example.com or /products" />
+      <Field label="Click-through link" name="href" defaultValue={slide?.href || ""} placeholder="/products or https://example.com" />
 
       <div className="grid gap-4 md:grid-cols-2">
         <div>
@@ -48,7 +43,7 @@ export function AdminHeroSlideForm({
           <input className="field" id="imageFile" name="imageFile" type="file" accept="image/png,image/jpeg,image/webp,image/avif" />
           <p className="mt-2 text-sm text-slate-500">JPG, PNG, WebP, or AVIF. Maximum 5 MB.</p>
         </div>
-        <Field label="Image URL fallback" name="imageUrl" type="url" defaultValue={slide?.imageUrl || ""} placeholder="https://..." />
+        <Field label="Image URL fallback" name="imageUrl" type="url" defaultValue={slide?.imageUrl || ""} placeholder="https://example.com/slide.jpg" />
       </div>
 
       <label className="flex items-center gap-2 font-semibold text-slate-700">
