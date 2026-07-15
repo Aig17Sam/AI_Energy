@@ -5,7 +5,7 @@ import crypto from "node:crypto";
 import { prisma } from "@/lib/prisma";
 
 const COOKIE_NAME = "ai-energy-admin";
-const SESSION_DAYS = 7;
+const SESSION_SECONDS = 60 * 60;
 
 function getSecret() {
   const secret = process.env.AUTH_SECRET;
@@ -20,7 +20,7 @@ function sign(payload: string) {
 }
 
 export function createSessionToken(userId: string) {
-  const expires = Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000;
+  const expires = Date.now() + SESSION_SECONDS * 1000;
   const payload = `${userId}.${expires}`;
   return `${payload}.${sign(payload)}`;
 }
@@ -31,8 +31,8 @@ export async function setAdminSession(userId: string) {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: SESSION_DAYS * 24 * 60 * 60
+    path: "/admin",
+    maxAge: SESSION_SECONDS
   });
 }
 
