@@ -14,15 +14,15 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="bg-white">
-        <div className="container-shell grid min-h-[calc(100vh-80px)] items-center gap-10 py-10 lg:grid-cols-[1fr_0.92fr]">
+      <section className="border-b border-slate-200 bg-[linear-gradient(16deg,#ffffff_0%,#ffffff_49%,#e9f5f5_49%,#e9f5f5_100%)]">
+        <div className="mx-auto grid min-h-[calc(100vh-80px)] w-[min(1320px,calc(100%-32px))] items-center gap-10 py-10 lg:grid-cols-[1fr_0.92fr]">
           <div className="max-w-3xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-800">
               <SunMedium size={17} aria-hidden />
               Australian solar battery storage specialists
             </div>
             <h1 className="text-5xl font-black leading-[1.03] tracking-normal text-ink md:text-7xl">
-              AI Energy111
+              AI Energy
             </h1>
             <p className="mt-6 max-w-2xl text-xl leading-8 text-slate-600">
               Professional solar battery guidance for homes and small businesses wanting smarter storage, clearer

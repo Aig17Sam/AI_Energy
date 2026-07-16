@@ -26,6 +26,7 @@ export const metadata: Metadata = {
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Products" },
+  { href: "/study-case", label: "Study Case" },
   { href: "/#stc-calculator", label: "Calculator" }
 ];
 
@@ -167,6 +168,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 <div className="grid gap-1.25 text-sm text-slate-600">
                   <Link href="/products" className="hover:text-ink">
                     Products
+                  </Link>
+                  <Link href="/study-case" className="hover:text-ink">
+                    Study Case
                   </Link>
                   <Link href="/contact" className="hover:text-ink">
                     Make an inquiry
