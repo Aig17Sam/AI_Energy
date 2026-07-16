@@ -22,7 +22,7 @@ export default async function HomePage() {
               Australian solar battery storage specialists
             </div>
             <h1 className="text-5xl font-black leading-[1.03] tracking-normal text-ink md:text-7xl">
-              AI Energy
+              AI Energy111
             </h1>
             <p className="mt-6 max-w-2xl text-xl leading-8 text-slate-600">
               Professional solar battery guidance for homes and small businesses wanting smarter storage, clearer
