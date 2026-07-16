@@ -6,6 +6,10 @@
   color-scheme: light;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -87,5 +91,118 @@ a {
 @media (max-width: 720px) {
   .section-pad {
     padding-block: 48px;
+  }
+}
+
+.comparison-panel-shell {
+  overflow: hidden;
+}
+
+.comparison-panel-current,
+.comparison-panel-ghost {
+  will-change: transform, opacity;
+}
+
+.comparison-panel-enter-next,
+.comparison-panel-enter-previous {
+  animation-duration: 460ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+
+.comparison-panel-enter-next {
+  animation-name: comparison-panel-enter-next;
+}
+
+.comparison-panel-enter-previous {
+  animation-name: comparison-panel-enter-previous;
+}
+
+.comparison-panel-ghost-next,
+.comparison-panel-ghost-previous {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  opacity: 0.34;
+}
+
+.comparison-panel-ghost-next {
+  animation-name: comparison-panel-ghost-next;
+}
+
+.comparison-panel-ghost-previous {
+  animation-name: comparison-panel-ghost-previous;
+}
+
+@keyframes comparison-panel-enter-next {
+  0% {
+    opacity: 0;
+    transform: translateX(132px);
+    filter: blur(4px);
+  }
+
+  60% {
+    filter: blur(1px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes comparison-panel-enter-previous {
+  0% {
+    opacity: 0;
+    transform: translateX(-132px);
+    filter: blur(4px);
+  }
+
+  60% {
+    filter: blur(1px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes comparison-panel-ghost-next {
+  0% {
+    opacity: 0.34;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-84px) scale(0.985);
+    filter: blur(5px);
+  }
+}
+
+@keyframes comparison-panel-ghost-previous {
+  0% {
+    opacity: 0.34;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(84px) scale(0.985);
+    filter: blur(5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comparison-panel-enter-next,
+  .comparison-panel-enter-previous,
+  .comparison-panel-ghost-next,
+  .comparison-panel-ghost-previous {
+    animation: none;
   }
 }

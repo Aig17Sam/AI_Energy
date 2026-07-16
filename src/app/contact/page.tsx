@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { InquiryForm } from "@/components/inquiry-form";
-import { getActiveProducts } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Solar Battery Inquiry",
@@ -16,11 +15,7 @@ export default async function ContactPage({
 }: {
   searchParams: Promise<{ product?: string }>;
 }) {
-  const [products, params] = await Promise.all([getActiveProducts(), searchParams]);
-  const productOptions = products.map((product) => ({
-    id: product.id,
-    name: product.name
-  }));
+  const params = await searchParams;
 
   return (
     <section className="section-pad bg-mist-blue">
@@ -29,11 +24,11 @@ export default async function ContactPage({
           <p className="font-bold uppercase tracking-[0.16em] text-energy-green">Customer inquiry</p>
           <h1 className="mt-2 text-4xl font-black text-ink md:text-5xl">Request solar battery advice or pricing</h1>
           <p className="mt-4 text-lg leading-8 text-slate-600">
-            Leave your contact details, preferred battery, and a short message. Your inquiry is saved to the admin
+            Leave your contact details, location, solar status, and a short message. Your inquiry is saved to the admin
             dashboard and emailed to the business owner when SMTP is configured.
           </p>
         </div>
-        <InquiryForm products={productOptions} selectedProductId={params.product} />
+        <InquiryForm selectedProductId={params.product} />
       </div>
     </section>
   );

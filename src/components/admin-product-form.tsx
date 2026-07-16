@@ -31,7 +31,7 @@ export function AdminProductForm({ product, action }: ProductFormProps) {
         <Field label="Brand" name="brand" defaultValue={product?.brand} minLength={2} required />
         <Field label="Price AUD" name="price" type="number" defaultValue={product?.price.toString()} min={0.01} step="0.01" required />
         <Field label="Capacity" name="capacity" defaultValue={product?.capacity} required />
-        <Field label="Usable capacity" name="usableCapacity" defaultValue={product?.usableCapacity || ""} />
+        <Field label="Model" name="usableCapacity" defaultValue={product?.usableCapacity || ""} />
         <Field label="Battery chemistry" name="batteryChemistry" defaultValue={product?.batteryChemistry || ""} />
         <Field label="Warranty years" name="warrantyYears" type="number" defaultValue={product?.warrantyYears?.toString() || ""} min={0} step="1" />
         <Field label="Dimensions" name="dimensions" defaultValue={product?.dimensions || ""} />

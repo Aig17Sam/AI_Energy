@@ -1,6 +1,7 @@
 import { Mail, Phone } from "lucide-react";
+import type { InquiryStatus } from "@prisma/client";
 
-import { updateInquiryStatus } from "@/app/admin/actions";
+import { InquiryStatusSelect } from "@/components/inquiry-status-select";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -22,10 +23,15 @@ export default async function AdminInquiriesPage() {
         </div>
         <div className="grid gap-4">
           {inquiries.map((inquiry) => (
-            <article key={inquiry.id} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <article key={inquiry.id} className={`rounded-lg border bg-white p-5 shadow-sm ${getInquiryCardClass(inquiry.status)}`}>
               <div className="flex flex-wrap justify-between gap-4 border-b border-slate-100 pb-4">
                 <div>
-                  <h2 className="text-xl font-black text-ink">{inquiry.name}</h2>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h2 className="text-xl font-black text-ink">{inquiry.name}</h2>
+                    <span className={`rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.12em] ${getInquiryBadgeClass(inquiry.status)}`}>
+                      {formatInquiryStatus(inquiry.status)}
+                    </span>
+                  </div>
                   <div className="mt-2 flex flex-wrap gap-4 text-sm text-slate-600">
                     <a className="flex items-center gap-2" href={`mailto:${inquiry.email}`}>
                       <Mail size={16} aria-hidden />
@@ -37,23 +43,13 @@ export default async function AdminInquiriesPage() {
                     </a>
                   </div>
                 </div>
-                <form action={updateInquiryStatus} className="flex items-center gap-2">
-                  <input type="hidden" name="id" value={inquiry.id} />
-                  <select className="field h-11 min-w-36" name="status" defaultValue={inquiry.status}>
-                    <option value="NEW">New</option>
-                    <option value="CONTACTED">Contacted</option>
-                    <option value="CLOSED">Closed</option>
-                  </select>
-                  <button className="button-secondary h-11 text-sm" type="submit">
-                    Update
-                  </button>
-                </form>
+                <InquiryStatusSelect inquiryId={inquiry.id} status={inquiry.status} />
               </div>
               <div className="mt-4 grid gap-3">
                 <div className="text-sm font-bold uppercase tracking-[0.12em] text-slate-500">
                   {inquiry.product?.name || "General inquiry"} · {inquiry.createdAt.toLocaleString("en-AU")}
                 </div>
-                <p className="leading-7 text-slate-700">{inquiry.message}</p>
+                <p className="whitespace-pre-wrap leading-7 text-slate-700">{inquiry.message}</p>
               </div>
             </article>
           ))}
@@ -66,4 +62,28 @@ export default async function AdminInquiriesPage() {
       </div>
     </section>
   );
+}
+
+function formatInquiryStatus(status: InquiryStatus) {
+  return {
+    NEW: "New",
+    CONTACTED: "Contacted",
+    CLOSED: "Closed"
+  }[status];
+}
+
+function getInquiryBadgeClass(status: InquiryStatus) {
+  return {
+    NEW: "bg-emerald-100 text-emerald-800",
+    CONTACTED: "bg-sky-100 text-sky-800",
+    CLOSED: "bg-slate-200 text-slate-700"
+  }[status];
+}
+
+function getInquiryCardClass(status: InquiryStatus) {
+  return {
+    NEW: "border-emerald-200 ring-1 ring-emerald-50",
+    CONTACTED: "border-sky-200 ring-1 ring-sky-50",
+    CLOSED: "border-slate-200 opacity-75"
+  }[status];
 }
