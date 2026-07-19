@@ -69,6 +69,26 @@ model HeroSlide {
   updatedAt DateTime @updatedAt
 }
 
+model StudyCase {
+  id          String           @id @default(cuid())
+  title       String
+  description String
+  sortOrder   Int              @default(0)
+  isActive    Boolean          @default(true)
+  images      StudyCaseImage[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model StudyCaseImage {
+  id          String    @id @default(cuid())
+  url         String
+  sortOrder   Int       @default(0)
+  studyCase   StudyCase @relation(fields: [studyCaseId], references: [id], onDelete: Cascade)
+  studyCaseId String
+  createdAt   DateTime  @default(now())
+}
+
 model SiteAsset {
   id        String   @id @default(cuid())
   key       String   @unique

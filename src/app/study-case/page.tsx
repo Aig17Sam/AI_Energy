@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
 import { StudyCaseGallery } from "@/components/study-case-gallery";
+import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Solar Battery Study Cases",
@@ -8,7 +11,7 @@ export const metadata: Metadata = {
     "Browse sample solar battery study cases for homes and businesses comparing storage, backup power, and energy savings."
 };
 
-const studyCases = [
+const fallbackStudyCases = [
   {
     title: "Family Home Battery Upgrade",
     images: [
@@ -71,7 +74,19 @@ const studyCases = [
   }
 ];
 
-export default function StudyCasePage() {
+export default async function StudyCasePage() {
+  const records = await prisma.studyCase.findMany({
+    where: { isActive: true },
+    include: { images: { orderBy: { sortOrder: "asc" } } },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }]
+  });
+  const studyCases = records.length
+    ? records.filter((record) => record.images.length).map((record) => ({
+        title: record.title,
+        description: record.description,
+        images: record.images.map((image) => image.url)
+      }))
+    : fallbackStudyCases;
   return (
     <section className="section-pad bg-mist-blue">
       <div className="container-shell">

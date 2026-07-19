@@ -13,11 +13,11 @@ export const metadata: Metadata = {
     template: "%s | AI Energy"
   },
   description:
-    "AI Energy helps Australian homes and businesses compare solar battery storage options, pricing, warranties, and installation inquiries.",
+    "AI Energy delivers integrated solar and battery solutions for Australian homes, businesses, and emerging energy projects.",
   openGraph: {
     title: "AI Energy | Solar Battery Storage Australia",
     description:
-      "Modern solar battery solutions for backup power, energy independence, and smarter use of rooftop solar.",
+      "Integrated solar and battery solutions engineered for performance, resilience, and a smarter energy future.",
     type: "website",
     locale: "en_AU"
   }
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Products" },
-  { href: "/study-case", label: "Study Case" },
+  { href: "/study-case", label: "Projects" },
   { href: "/#stc-calculator", label: "Calculator" }
 ];
 
@@ -89,7 +89,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en-AU">
       <body>
-        <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/92 backdrop-blur">
+        <header className="sticky top-0 z-40 border-b border-black/5 bg-[#f8f8f4]/95 backdrop-blur-xl">
           <div className="container-shell flex h-20 items-center justify-between gap-6">
             <Link href="/" className="flex items-center gap-0.5" aria-label="AI Energy home">
               <span className="flex min-h-11 min-w-[70px] items-center justify-center overflow-hidden rounded-lg md:min-w-[80px]">
@@ -112,7 +112,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             </nav>
 
             <div className="hidden items-center gap-3 md:flex">
-              <Link href="/contact" className="button-primary h-11 px-4 text-sm">
+              <Link href="/contact" className="button-primary h-11 rounded-full bg-[#0b1714] px-5 text-sm text-white shadow-none hover:bg-emerald-800">
                 <Mail size={17} aria-hidden />
                 Get a quote
               </Link>
@@ -180,8 +180,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
               <div>
                 <h2 className="mb-1.5 text-sm font-bold uppercase tracking-[0.16em] text-slate-500">Coverage</h2>
                 <p className="text-sm leading-5 text-slate-600">
-                  Solar battery product guidance, pricing transparency, and inquiry support for Australian homes and
-                  small businesses.
+                  Integrated solar and battery solutions for Australian homes, businesses, and emerging energy projects.
                 </p>
               </div>
             </div>
