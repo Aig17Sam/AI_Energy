@@ -98,7 +98,12 @@ export function StcCalculator() {
   const totalValue = (showSolar ? solarResult.value : 0) + (showBattery ? batteryResult.value : 0);
 
   return (
-    <section id="stc-calculator" className="section-pad scroll-mt-24 bg-white">
+    <section
+      id="stc-calculator"
+      className="section-pad relative isolate scroll-mt-24 overflow-hidden border-y border-[#d6e4df] bg-[#eaf4f1]"
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/55 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/65 to-transparent" />
       <div className="container-shell grid gap-10 lg:grid-cols-[0.86fr_1.14fr]">
         <div>
           <p className="font-bold uppercase tracking-[0.16em] text-energy-green">STC calculator</p>
