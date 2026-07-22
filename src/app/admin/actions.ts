@@ -26,6 +26,15 @@ export type BrandingActionState = {
   message: string;
 };
 
+export type StudyCaseActionState = { ok: boolean; message: string };
+
+const studyCaseSchema = z.object({
+  title: z.string().trim().min(2, "Title must contain at least 2 characters."),
+  description: z.string().trim().min(10, "Description must contain at least 10 characters."),
+  sortOrder: z.coerce.number().int().default(0),
+  isActive: z.boolean().default(false)
+});
+
 const imageUrlSchema = z
   .string()
   .trim()
@@ -385,6 +394,80 @@ async function uploadPublicImage(fileValue: FormDataEntryValue | null, pathPrefi
 
 function hasUploadFile(fileValue: FormDataEntryValue | null) {
   return fileValue instanceof File && fileValue.size > 0;
+}
+
+export async function saveStudyCase(
+  id: string | null,
+  _: StudyCaseActionState,
+  formData: FormData
+): Promise<StudyCaseActionState> {
+  await requireAdmin();
+  const parsed = studyCaseSchema.safeParse({
+    title: formData.get("title"),
+    description: formData.get("description"),
+    sortOrder: formData.get("sortOrder") || 0,
+    isActive: formData.get("isActive") === "on"
+  });
+  if (!parsed.success) {
+    const errors = parsed.error.flatten().fieldErrors;
+    return { ok: false, message: errors.title?.[0] || errors.description?.[0] || "Please check the form." };
+  }
+
+  const existing = id ? await prisma.studyCase.findUnique({ where: { id }, include: { images: true } }) : null;
+  if (id && !existing) return { ok: false, message: "Study case could not be found." };
+
+  const removeIds = new Set(formData.getAll("removeImageId").map(String));
+  const keptImages = existing?.images.filter((image) => !removeIds.has(image.id)) || [];
+  const files = formData.getAll("imageFiles").filter(hasUploadFile) as File[];
+  const urls = String(formData.get("imageUrls") || "").split(/\r?\n/).map((value) => value.trim()).filter(Boolean);
+  if (keptImages.length + files.length + urls.length > 5) {
+    return { ok: false, message: "Each study case can have no more than 5 pictures." };
+  }
+  if (keptImages.length + files.length + urls.length === 0) {
+    return { ok: false, message: "Add at least one picture." };
+  }
+  for (const url of urls) {
+    if (!imageUrlSchema.safeParse(url).success) return { ok: false, message: `Invalid image URL: ${url}` };
+  }
+
+  const uploadedUrls: string[] = [];
+  for (const file of files) {
+    const upload = await uploadPublicImage(file, `study-cases/${slugify(parsed.data.title)}`, "Study case picture");
+    if (!upload.ok) return upload;
+    if (upload.url) uploadedUrls.push(upload.url);
+  }
+
+  const record = await prisma.$transaction(async (tx) => {
+    const studyCase = id
+      ? await tx.studyCase.update({ where: { id }, data: parsed.data })
+      : await tx.studyCase.create({ data: parsed.data });
+    if (removeIds.size) await tx.studyCaseImage.deleteMany({ where: { id: { in: [...removeIds] }, studyCaseId: studyCase.id } });
+    const additions = [...urls, ...uploadedUrls];
+    if (additions.length) await tx.studyCaseImage.createMany({
+      data: additions.map((url, index) => ({ url, studyCaseId: studyCase.id, sortOrder: keptImages.length + index }))
+    });
+    return studyCase;
+  });
+
+  const removedBlobUrls = existing?.images.filter((image) => removeIds.has(image.id) && image.url.includes(".blob.vercel-storage.com")) || [];
+  for (const image of removedBlobUrls) { try { await del(image.url); } catch (error) { console.warn("Study case picture could not be deleted.", error); } }
+  revalidatePath("/study-case");
+  revalidatePath("/admin/study-cases");
+  revalidatePath(`/admin/study-cases/${record.id}`);
+  redirect("/admin/study-cases");
+}
+
+export async function deleteStudyCase(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id") || "");
+  const record = id ? await prisma.studyCase.findUnique({ where: { id }, include: { images: true } }) : null;
+  if (!record) return;
+  await prisma.studyCase.delete({ where: { id } });
+  for (const image of record.images.filter((item) => item.url.includes(".blob.vercel-storage.com"))) {
+    try { await del(image.url); } catch (error) { console.warn("Study case picture could not be deleted.", error); }
+  }
+  revalidatePath("/study-case");
+  revalidatePath("/admin/study-cases");
 }
 
 function isLikelyImageUrl(value: string | undefined) {

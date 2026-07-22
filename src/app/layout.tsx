@@ -13,11 +13,11 @@ export const metadata: Metadata = {
     template: "%s | AI Energy"
   },
   description:
-    "AI Energy helps Australian homes and businesses compare solar battery storage options, pricing, warranties, and installation inquiries.",
+    "AI Energy delivers integrated solar and battery solutions for Australian homes, businesses, and emerging energy projects.",
   openGraph: {
     title: "AI Energy | Solar Battery Storage Australia",
     description:
-      "Modern solar battery solutions for backup power, energy independence, and smarter use of rooftop solar.",
+      "Integrated solar and battery solutions engineered for performance, resilience, and a smarter energy future.",
     type: "website",
     locale: "en_AU"
   }
@@ -25,7 +25,9 @@ export const metadata: Metadata = {
 
 const navItems = [
   { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
   { href: "/products", label: "Products" },
+  { href: "/study-case", label: "Projects" },
   { href: "/#stc-calculator", label: "Calculator" }
 ];
 
@@ -88,7 +90,8 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en-AU">
       <body>
-        <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/92 backdrop-blur">
+        <header className="sticky top-0 z-40 border-b border-black/5 bg-[#f8f8f4]/88 shadow-[0_12px_40px_rgba(7,17,15,0.06)] backdrop-blur-xl">
+          <div className="pointer-events-none absolute inset-x-0 bottom-[-1px] h-px bg-gradient-to-r from-transparent via-emerald-700/20 to-transparent" />
           <div className="container-shell flex h-20 items-center justify-between gap-6">
             <Link href="/" className="flex items-center gap-0.5" aria-label="AI Energy home">
               <span className="flex min-h-11 min-w-[70px] items-center justify-center overflow-hidden rounded-lg md:min-w-[80px]">
@@ -102,26 +105,26 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
               </span>
             </Link>
 
-            <nav className="hidden items-center gap-7 md:flex" aria-label="Main navigation">
+            <nav className="hidden items-center gap-1 rounded-full border border-black/5 bg-white/58 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] md:flex" aria-label="Main navigation">
               {navItems.map((item) => (
-                <Link key={item.href} href={item.href} className="text-sm font-semibold text-slate-700 hover:text-ink">
+                <Link key={item.href} href={item.href} className="rounded-full px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-[#07110f] hover:text-white">
                   {item.label}
                 </Link>
               ))}
             </nav>
 
             <div className="hidden items-center gap-3 md:flex">
-              <Link href="/contact" className="button-primary h-11 px-4 text-sm">
+              <Link href="/contact" className="button-primary h-11 rounded-full bg-[#0b1714] px-5 text-sm text-white shadow-[0_14px_28px_rgba(7,17,15,0.16)] hover:bg-emerald-800">
                 <Mail size={17} aria-hidden />
                 Get a quote
               </Link>
             </div>
 
             <details className="md:hidden">
-              <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-lg border border-slate-200 bg-white">
+              <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-black/10 bg-white/80 shadow-sm">
                 <Menu size={21} aria-label="Open navigation" />
               </summary>
-              <div className="absolute left-4 right-4 top-20 rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+              <div className="absolute left-4 right-4 top-20 rounded-2xl border border-black/10 bg-white/95 p-4 shadow-[0_20px_60px_rgba(7,17,15,0.18)] backdrop-blur">
                 <div className="grid gap-2">
                   {navItems.map((item) => (
                     <Link key={item.href} href={item.href} className="rounded-md px-3 py-2 font-semibold text-slate-700">
@@ -139,49 +142,56 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
         <main>{children}</main>
 
-        <footer className="border-t border-slate-200/80 bg-white/92 py-6 backdrop-blur">
+        <footer className="relative isolate overflow-hidden border-t border-white/10 bg-[#07110f] py-8 text-white">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300/50 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-emerald-300/10 to-transparent" />
           <div className="container-shell">
             <div className="grid gap-3.5 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
               <div>
-                <div className="mb-1.5 flex items-center gap-2 text-xl font-black leading-none text-ink">
+                <div className="mb-1.5 flex items-center gap-2 text-xl font-black leading-none text-white">
                   <BrandMark currentLogo={currentLogo} size="small" />
                   <span className="-translate-y-[2px]">AI ENERGY</span>
                 </div>
-                <div className="mt-2.5 grid gap-1 text-sm leading-5 text-slate-600">
+                <div className="mt-2.5 grid gap-1 text-sm leading-5 text-white/68">
                   <p className="flex items-start gap-2">
-                    <MapPin size={16} className="mt-0.5 shrink-0 text-energy-green" aria-hidden />
-                    <span>1/17 Brumby St, Seven Hills NSW 2147</span>
+                    <MapPin size={16} className="mt-0.5 shrink-0 text-emerald-300" aria-hidden />
+                    <span>Head Office: 1/17 Brumby St, Seven Hills NSW 2147</span>
                   </p>
                   <p className="flex items-center gap-2">
-                    <Phone size={16} className="shrink-0 text-energy-green" aria-hidden />
+                    <Phone size={16} className="shrink-0 text-emerald-300" aria-hidden />
                     <span>(02) 8360 3660</span>
                   </p>
                   <p className="flex items-center gap-2">
-                    <Mail size={16} className="shrink-0 text-energy-green" aria-hidden />
+                    <Mail size={16} className="shrink-0 text-emerald-300" aria-hidden />
                     <span>info@aienergygroup.com.au</span>
                   </p>
                 </div>
               </div>
               <div>
-                <h2 className="mb-1.5 text-sm font-bold uppercase tracking-[0.16em] text-slate-500">Explore</h2>
-                <div className="grid gap-1.25 text-sm text-slate-600">
-                  <Link href="/products" className="hover:text-ink">
+                <h2 className="mb-1.5 text-sm font-bold uppercase tracking-[0.16em] text-emerald-300/80">Explore</h2>
+                <div className="grid gap-1.25 text-sm text-white/68">
+                  <Link href="/products" className="hover:text-white">
                     Products
                   </Link>
-                  <Link href="/contact" className="hover:text-ink">
+                  <Link href="/about" className="hover:text-white">
+                    About
+                  </Link>
+                  <Link href="/study-case" className="hover:text-white">
+                    Study Case
+                  </Link>
+                  <Link href="/contact" className="hover:text-white">
                     Make an inquiry
                   </Link>
                 </div>
               </div>
               <div>
-                <h2 className="mb-1.5 text-sm font-bold uppercase tracking-[0.16em] text-slate-500">Coverage</h2>
-                <p className="text-sm leading-5 text-slate-600">
-                  Solar battery product guidance, pricing transparency, and inquiry support for Australian homes and
-                  small businesses.
+                <h2 className="mb-1.5 text-sm font-bold uppercase tracking-[0.16em] text-emerald-300/80">Coverage</h2>
+                <p className="text-sm leading-5 text-white/68">
+                  Integrated solar and battery solutions for Australian homes, businesses, and emerging energy projects.
                 </p>
               </div>
             </div>
-            <div className="mt-5 border-t border-slate-200 pt-3 text-sm text-slate-500">
+            <div className="mt-5 border-t border-white/10 pt-3 text-sm text-white/45">
               © 2026 AI ENERGY Group Pty Ltd. All rights reserved.
             </div>
           </div>

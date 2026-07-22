@@ -49,7 +49,7 @@ export function HeroImageCarousel({ slides }: { slides: HeroCarouselSlide[] }) {
   ));
 
   return (
-    <div className="relative min-h-[430px] overflow-hidden rounded-lg bg-white shadow-soft">
+    <div className="relative min-h-[72vh] overflow-hidden bg-[#101a17]">
       {activeSlide.href ? (
         <Link
           href={activeSlide.href}
@@ -64,11 +64,16 @@ export function HeroImageCarousel({ slides }: { slides: HeroCarouselSlide[] }) {
         imageLayers
       )}
 
+      <div className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
+      <div className="pointer-events-none absolute bottom-10 left-8 z-20 max-w-xl text-white md:bottom-16 md:left-16">
+        <p className="text-xs font-bold uppercase tracking-[.28em] text-emerald-300">Designed around your life</p>
+        <h2 className="mt-4 text-4xl font-medium leading-none tracking-[-.045em] md:text-7xl">Power in motion.</h2>
+      </div>
       {slides.length > 1 ? (
         <>
           <button
             type="button"
-            className="absolute left-4 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg border border-white/20 bg-ink/45 text-white shadow-sm backdrop-blur transition hover:bg-ink/70"
+            className="absolute right-20 top-8 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-white/30 bg-black/20 text-white backdrop-blur transition hover:bg-white hover:text-black"
             onClick={showPrevious}
             aria-label="Show previous image"
           >
@@ -76,7 +81,7 @@ export function HeroImageCarousel({ slides }: { slides: HeroCarouselSlide[] }) {
           </button>
           <button
             type="button"
-            className="absolute right-4 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg border border-white/20 bg-ink/45 text-white shadow-sm backdrop-blur transition hover:bg-ink/70"
+            className="absolute right-6 top-8 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-white/30 bg-black/20 text-white backdrop-blur transition hover:bg-white hover:text-black"
             onClick={showNext}
             aria-label="Show next image"
           >
@@ -86,7 +91,7 @@ export function HeroImageCarousel({ slides }: { slides: HeroCarouselSlide[] }) {
       ) : null}
 
       {slides.length > 1 ? (
-        <div className="absolute bottom-4 left-1/2 z-30 flex -translate-x-1/2 gap-2">
+        <div className="absolute bottom-10 right-8 z-30 flex gap-2 md:bottom-16 md:right-16">
           {slides.map((slide, index) => (
             <button
               key={slide.id}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BarChart3, Boxes, Images, Inbox, LogOut, Palette } from "lucide-react";
+import { BarChart3, Boxes, Images, Inbox, LogOut, PanelsTopLeft } from "lucide-react";
 
 import { logoutAdmin } from "@/app/admin/actions";
 import { getCurrentAdmin } from "@/lib/auth";
@@ -25,9 +25,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 <Images size={16} aria-hidden />
                 Hero Slides
               </Link>
-              <Link className="button-secondary h-10 text-sm" href="/admin/branding">
-                <Palette size={16} aria-hidden />
-                Branding
+              <Link className="button-secondary h-10 text-sm" href="/admin/study-cases">
+                <PanelsTopLeft size={16} aria-hidden />
+                Study Cases
               </Link>
               <Link className="button-secondary h-10 text-sm" href="/admin/inquiries">
                 <Inbox size={16} aria-hidden />
