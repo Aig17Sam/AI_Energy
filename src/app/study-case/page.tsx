@@ -94,8 +94,6 @@ export default async function StudyCasePage() {
           <p className="font-bold uppercase tracking-[0.16em] text-energy-green">Study case</p>
           <h1 className="mt-2 text-4xl font-black text-ink md:text-5xl">Solar battery showcase</h1>
           <p className="mt-4 text-lg leading-8 text-slate-600">
-            Dummy examples for common solar battery projects. Each card can later be replaced with a real customer case,
-            project photo, suburb, battery model, and performance notes.
           </p>
         </div>
 

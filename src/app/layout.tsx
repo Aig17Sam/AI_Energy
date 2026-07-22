@@ -155,7 +155,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 <div className="mt-2.5 grid gap-1 text-sm leading-5 text-white/68">
                   <p className="flex items-start gap-2">
                     <MapPin size={16} className="mt-0.5 shrink-0 text-emerald-300" aria-hidden />
-                    <span>1/17 Brumby St, Seven Hills NSW 2147</span>
+                    <span>Head Office: 1/17 Brumby St, Seven Hills NSW 2147</span>
                   </p>
                   <p className="flex items-center gap-2">
                     <Phone size={16} className="shrink-0 text-emerald-300" aria-hidden />
