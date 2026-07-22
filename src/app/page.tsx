@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, BatteryCharging, ShieldCheck, Sparkles } from "lucide-react";
 
-import { HeroImageCarousel } from "@/components/hero-image-carousel";
 import { HeroProductPreview } from "@/components/hero-product-preview";
 import { ProductCard } from "@/components/product-card";
 import { StcCalculator } from "@/components/stc-calculator";

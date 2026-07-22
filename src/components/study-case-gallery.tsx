@@ -110,14 +110,14 @@ export function StudyCaseGallery({ studyCases }: StudyCaseGalleryProps) {
               </button>
             </div>
 
-            <div className="relative bg-ink">
-              <div className="relative aspect-[16/10] max-h-[72vh]">
+            <div className="relative bg-[#07110f]">
+              <div className="relative h-[min(72vh,720px)] w-full bg-[#07110f]">
                 <Image
                   src={activeCase.images[activeImageIndex]}
                   alt={`${activeCase.title} photo ${activeImageIndex + 1}`}
                   fill
                   sizes="min(100vw, 1024px)"
-                  className="object-cover"
+                  className="object-contain"
                   priority
                 />
               </div>
