@@ -6,7 +6,7 @@ import { Mail, MapPin, Menu, Phone } from "lucide-react";
 import "./globals.css";
 import { getSiteLogo } from "@/lib/site-branding";
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: {
     default: "AI Energy | Solar Battery Storage Australia",
@@ -23,6 +23,18 @@ export const metadata: Metadata = {
   }
 };
 
+export async function generateMetadata(): Promise<Metadata> {
+  const currentLogo = await getSiteLogo();
+
+  return {
+    ...baseMetadata,
+    icons: {
+      icon: currentLogo?.imageUrl || "/logo.svg",
+      shortcut: currentLogo?.imageUrl || "/logo.svg"
+    }
+  };
+}
+
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
@@ -30,29 +42,6 @@ const navItems = [
   { href: "/study-case", label: "Projects" },
   { href: "/#stc-calculator", label: "Calculator" }
 ];
-
-function SolarLogo({ className = "h-11 w-11" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 96 96" fill="none" role="img" aria-label="AI Energy solar logo">
-      <rect width="96" height="96" rx="20" fill="#10202B" />
-      <circle cx="66" cy="31" r="14" fill="#FBBF24" />
-      <path d="M66 8V16" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
-      <path d="M66 46V54" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
-      <path d="M43 31H51" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
-      <path d="M81 31H89" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
-      <path d="M49.7 14.7L55.3 20.3" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
-      <path d="M76.7 41.7L82.3 47.3" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
-      <path d="M82.3 14.7L76.7 20.3" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
-      <path d="M55.3 41.7L49.7 47.3" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" />
-      <path d="M18 56C18.8 51.1 23.1 47.5 28.1 47.5H66.6C71.2 47.5 75.3 50.6 76.6 55L84 80H12L18 56Z" fill="#10B981" />
-      <path d="M26 53H69" stroke="#D1FAE5" strokeWidth="3" strokeLinecap="round" />
-      <path d="M20 66H80" stroke="#D1FAE5" strokeWidth="3" strokeLinecap="round" />
-      <path d="M31 48L24 80" stroke="#D1FAE5" strokeWidth="3" strokeLinecap="round" />
-      <path d="M47 48L46 80" stroke="#D1FAE5" strokeWidth="3" strokeLinecap="round" />
-      <path d="M63 48L69 80" stroke="#D1FAE5" strokeWidth="3" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 async function BrandMark({
   currentLogo,
@@ -62,7 +51,15 @@ async function BrandMark({
   size?: "large" | "small";
 }) {
   if (!currentLogo) {
-    return size === "large" ? <SolarLogo /> : <SolarLogo className="h-6 w-6 rounded-md" />;
+    return (
+      <Image
+        src="/logo.svg"
+        alt="AI Energy solar logo"
+        width={96}
+        height={96}
+        className={size === "large" ? "h-11 w-11" : "h-6 w-6 rounded-md"}
+      />
+    );
   }
 
   return size === "large" ? (
