@@ -28,10 +28,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     ...baseMetadata,
-    icons: {
-      icon: currentLogo?.imageUrl || "/logo.svg",
-      shortcut: currentLogo?.imageUrl || "/logo.svg"
-    }
+    ...(currentLogo
+      ? {
+          icons: {
+            icon: currentLogo.imageUrl,
+            shortcut: currentLogo.imageUrl
+          }
+        }
+      : {})
   };
 }
 
@@ -52,13 +56,14 @@ async function BrandMark({
 }) {
   if (!currentLogo) {
     return (
-      <Image
-        src="/logo.svg"
-        alt="AI Energy solar logo"
-        width={96}
-        height={96}
-        className={size === "large" ? "h-11 w-11" : "h-6 w-6 rounded-md"}
-      />
+      <span
+        aria-label="AI Energy"
+        className={`inline-flex shrink-0 items-center justify-center rounded-lg bg-emerald-700 font-black tracking-[-0.08em] text-white shadow-sm ${
+          size === "large" ? "h-11 w-11 text-sm" : "h-8 w-8 text-[10px]"
+        }`}
+      >
+        AI
+      </span>
     );
   }
 
@@ -143,7 +148,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300/50 to-transparent" />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-emerald-300/10 to-transparent" />
           <div className="container-shell">
-            <div className="grid gap-3.5 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
+            <div className="grid gap-6 md:grid-cols-[1.2fr_0.7fr_0.8fr_auto] md:items-start">
               <div>
                 <div className="mb-1.5 flex items-center gap-2 text-xl font-black leading-none text-white">
                   <BrandMark currentLogo={currentLogo} size="small" />
@@ -186,6 +191,17 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 <p className="text-sm leading-5 text-white/68">
                   Integrated solar and battery solutions for Australian homes, businesses, and emerging energy projects.
                 </p>
+              </div>
+              <div className="flex justify-center md:justify-end">
+                <div className="w-fit rounded-xl border border-white/15 bg-white p-3 shadow-[0_14px_36px_rgba(0,0,0,0.2)]">
+                  <Image
+                    src="/certificate.png"
+                    alt="Clean Energy Council Member"
+                    width={2048}
+                    height={1228}
+                    className="h-auto w-[190px] md:w-[210px]"
+                  />
+                </div>
               </div>
             </div>
             <div className="mt-5 border-t border-white/10 pt-3 text-sm text-white/45">

@@ -22,7 +22,7 @@ export async function getSiteLogo(): Promise<SiteLogo | null> {
       alt: asset.alt || "AI Energy logo"
     };
   } catch (error) {
-    console.warn("Using fallback inline logo because the site logo asset is unavailable.", error);
+    console.warn("Using the built-in text logo because the site logo asset is unavailable.", error);
     return null;
   }
 }
